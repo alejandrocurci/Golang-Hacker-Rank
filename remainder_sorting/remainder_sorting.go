@@ -2,7 +2,6 @@ package remainder_sorting
 
 import (
 	"sort"
-	"unicode/utf8"
 )
 
 // Challenge
@@ -27,9 +26,7 @@ func (r remainderSort) Len() int {
 
 func (r remainderSort) Less(i, j int) bool {
 	if len(r[i])%3 == len(r[j])%3 {
-		iRune, _ := utf8.DecodeRuneInString(r[i])
-		jRune, _ := utf8.DecodeRuneInString(r[j])
-		return int32(iRune) < int32(jRune)
+		return r[i] < r[j]
 	}
 	return len(r[i])%3 < len(r[j])%3
 }
