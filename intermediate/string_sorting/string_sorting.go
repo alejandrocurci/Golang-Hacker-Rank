@@ -4,13 +4,13 @@ import (
 	"sort"
 )
 
-// CHALLENGE
+// CustomSorting function
 // Sort a set of strings based on the following factors:
 // 1- An odd length string should precede an even length string.
 // 2- If both strings have odd lengths, the shorter of the two should precede.
 // 3- If both strings have even lengths, the longer of the two should precede.
 // 4- If the two strings have equal lengths, they should be in alphabetical order.
-func customSorting(strArr []string) []string {
+func CustomSorting(strArr []string) []string {
 	result := make([]string, len(strArr))
 	sort.Sort(customSort(strArr))
 	copy(result, strArr)

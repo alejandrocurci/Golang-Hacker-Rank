@@ -23,7 +23,7 @@ func TestCustomSorting(t *testing.T) {
 	}
 	for i, tt := range cases {
 		t.Run(fmt.Sprintf("Test: %v", i+1), func(t *testing.T) {
-			actual := customSorting(tt.input)
+			actual := CustomSorting(tt.input)
 			if len(actual) != len(tt.expected) {
 				t.Errorf("expected %v elements, returned %v", len(tt.expected), len(actual))
 			}
