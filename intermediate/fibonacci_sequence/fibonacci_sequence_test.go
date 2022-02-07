@@ -44,3 +44,34 @@ func TestModuloFibonacciSequence(t *testing.T) {
 		})
 	}
 }
+
+// check no negative numbers are coming as results
+func TestNegativeResults(t *testing.T) {
+	cases := []test{
+		{
+			skipped: 100,
+			amount:  200,
+		},
+	}
+
+	for _, tt := range cases {
+		t.Run("zero negative numbers", func(t *testing.T) {
+			boolCh := make(chan bool)
+			resultCh := make(chan int)
+			negativeNumbers := make([]int, 0)
+			go ModuloFibonacciSequence(boolCh, resultCh)
+			for i := 0; i < tt.amount+tt.skipped; i++ {
+				boolCh <- true
+				num := <-resultCh
+				if i >= tt.skipped {
+					if num < 0 {
+						negativeNumbers = append(negativeNumbers, num)
+					}
+				}
+			}
+			if len(negativeNumbers) > 0 {
+				t.Errorf("got %v negative numbers", len(negativeNumbers))
+			}
+		})
+	}
+}
