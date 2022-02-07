@@ -25,14 +25,9 @@ type (
 )
 
 func PostHandler(w http.ResponseWriter, req *http.Request) {
-	var action Action
-	err := json.NewDecoder(req.Body).Decode(&action)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
 	var lake Lake
-	if err := json.Unmarshal([]byte(action.Payload), &lake); err != nil {
+	err := json.NewDecoder(req.Body).Decode(&lake)
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -45,17 +40,12 @@ func PostHandler(w http.ResponseWriter, req *http.Request) {
 }
 
 func DeleteHandler(w http.ResponseWriter, req *http.Request) {
-	var action Action
-	err := json.NewDecoder(req.Body).Decode(&action)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
+	id := req.URL.Query()["id"]
 
 	lock.Lock()
 	defer lock.Unlock()
 
-	lake, ok := store[action.Payload]
+	lake, ok := store[id[0]]
 	if !ok {
 		http.Error(w, "404 Not Found", http.StatusNotFound)
 		return
@@ -65,16 +55,15 @@ func DeleteHandler(w http.ResponseWriter, req *http.Request) {
 }
 
 func GetHandler(w http.ResponseWriter, req *http.Request) {
-	var action Action
-	err := json.NewDecoder(req.Body).Decode(&action)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-	lake, ok := store[action.Payload]
+	id := req.URL.Query()["id"]
+	lake, ok := store[id[0]]
 	if !ok {
 		http.Error(w, "404 Not Found", http.StatusNotFound)
 		return
 	}
-	fmt.Fprintf(w, "%s\n%v", lake.Name, lake.Area)
+	b, err := json.Marshal(&lake)
+	if err != nil {
+		http.Error(w, "error marshalling response", http.StatusInternalServerError)
+	}
+	fmt.Fprintf(w, string(b))
 }
